@@ -12,8 +12,7 @@ The API is publicly hosted and ready to use — no setup required.
 |---|---|
 | Base URL | `https://engagbaitapi.onrender.com` |
 | Interactive demo | https://engagbaitapi.onrender.com/demo |
-| API reference (ReDoc) | https://engagbaitapi.onrender.com/redoc |
-| API docs (Swagger) | https://engagbaitapi.onrender.com/docs |
+| API Documentation | https://engagbaitapi.onrender.com/redoc |
 | Health check | https://engagbaitapi.onrender.com/health |
 
 Try it immediately with curl:
