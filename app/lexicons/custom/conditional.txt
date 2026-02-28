@@ -1,0 +1,15 @@
+# Conditional clauses - presence reduces simplification score
+if
+when
+unless
+provided
+assuming
+in case
+depending on
+contingent
+might
+could
+would
+may
+perhaps
+possibly
