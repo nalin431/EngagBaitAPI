@@ -1,34 +1,103 @@
 # Engagement Bait API
 
-Analyze structural engagement-bait patterns in text. The API combines deterministic heuristic signals with an optional OpenAI embedding-based semantic similarity score.
+Six interpretable metrics. One POST request. No black box.
 
-This project is currently optimized around:
-- a FastAPI backend
-- an explainable deterministic layer
-- an OpenAI-powered centroid embeddings score
-- a lightweight browser demo
-- an internal embeddings benchmark workflow
+Analyze structural engagement-bait patterns in text with a lightweight, deterministic heuristic layer and an optional OpenAI embedding-based semantic score. Every score includes a full transparent breakdown showing exactly which signals were detected and how they contributed.
 
-## What It Does
+## Live API
 
-- Detects structural manipulation patterns in text
-- Returns transparent heuristic breakdowns for each metric
-- Optionally adds `engagement_bait_score` using OpenAI embeddings
-- Includes a lightweight browser demo for quick judging and testing
-- Provides an internal benchmark script for reviewing embeddings behavior on curated examples
+The API is publicly hosted and ready to use — no setup required.
 
-## What It Does Not Do
+| Resource | URL |
+|---|---|
+| Base URL | `https://engagbaitapi.onrender.com` |
+| Interactive demo | https://engagbaitapi.onrender.com/demo |
+| API docs (Swagger) | https://engagbaitapi.onrender.com/docs |
+| Health check | https://engagbaitapi.onrender.com/health |
 
-- Fact check claims
-- Classify political ideology
-- Detect truthfulness
-- Perform content moderation
+Try it immediately with curl:
 
-Note that the deterministic layer does not attempt to produce a comprehensive "engagement bait score" and instead returns 5 potential components of engagement bait.
+```bash
+curl -s -X POST "https://engagbaitapi.onrender.com/analyze?embeddings=false" \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious."}' \
+  | python -m json.tool
+```
 
-These signals do not exhaustively capture all forms of engagement engineering or narrative distortion, and therefore are not combined to create a final score.
+## Use Cases
 
-This layer is intentionally interpretable, serving as a signal extractor instead of an all encompassing score.
+- **Social media moderation** — flag posts for editorial review before they gain traction
+- **Journalism analytics** — scan articles for one-sided framing, rhetorical pressure, and emotional manipulation signals
+- **Email filtering** — supplement spam detection with engagement-bait signals like urgency and curiosity gaps
+- **Browser extension backend** — score articles inline as users read them
+- **Media literacy education** — show students exactly why a text scores high, signal by signal
+
+## How Each Metric Works
+
+All scores are in the range `[0.0, 1.0]`. Two metrics (`evidence_density` and `counterargument_absence`) are **inverted** — higher values indicate more bait-like behavior, not more evidence or more nuance.
+
+### Urgency Pressure
+
+Scans for three categories of urgency signal using a curated phrase list:
+
+- `time_pressure` — "act now", "last chance", "breaking", "tick tock"
+- `scarcity` — "while supplies last", "limited spots", "only a few left"
+- `fomo` — "don't miss out", "everyone already knows", "you'll regret this"
+
+Score is the weighted average of the three sub-scores. Includes negation detection — "you don't need to act now" is not counted as urgency pressure.
+
+### Evidence Density *(inverted — higher = less evidence)*
+
+Looks for signals that a text is grounding its claims in data. Higher score means less evidence present.
+
+- `citations` — "according to", "researchers found", "a study shows"
+- `stats` — numeric patterns with units or percentages (e.g., "14 percent", "3.2 million")
+- `external_sources` — named institutions, publications, or proper sourcing language
+
+A text making bold claims with no data or sourcing scores close to 1.0.
+
+### Arousal Intensity
+
+Six sub-scores measuring emotional and rhetorical heat:
+
+- `emotion_words` — curated lexicon with valence tiers: tier 1 (worried, angry), tier 2 (furious, hatred), tier 3 (enraged, terror). Higher tiers contribute more. Includes negation detection ("not angry" → no hit) and degree modifier scaling ("extremely angry" scores higher than "slightly angry").
+- `moralized_language` — words framing issues in moral absolutes: corrupt, evil, sacred, betrayal
+- `superlative_density` — "the worst", "ever", "unprecedented", "most dangerous"
+- `caps_ratio` — proportion of ALL-CAPS words (checked on original, unmodified text)
+- `exclamation_density` and `question_density` — scaled by text length to avoid false positives on short texts; a single `!` in a short email does not spike the score to 1.0
+- `curiosity_gap` — "what they don't want you to know", "the real reason", "suppressed for years"
+
+### Counterargument Absence *(inverted — higher = fewer concessions)*
+
+Checks for the absence of language that acknowledges complexity or competing views.
+
+- `tradeoff_absence` — missing: "on the other hand", "however", "that said", "the downside is"
+- `conditional_absence` — missing: "it depends", "evidence suggests", "in some cases", "tends to"
+
+A text presenting only one perspective with no hedging or qualification scores 1.0.
+
+### Claim Volume vs Depth
+
+Three sub-scores measuring whether a text makes many claims without explaining them:
+
+- `claims_per_word` — assertion verbs (proves, reveals, exposes, confirms) relative to total word count
+- `explanation_depth` — subordinate clauses and causal connectors (because, therefore, which means, as a result). More explanation lowers this sub-score.
+- `listicle` — numbered or bulleted list structures, which tend to prioritize volume of points over depth of reasoning
+
+### Lexical Diversity
+
+Uses **MATTR** (Moving Average Type-Token Ratio) rather than raw TTR. A sliding window scans across the token sequence and computes `unique / window` at each position; the final score is the average across all windows. This is length-invariant — a 500-word repetitive text and a 50-word repetitive text are judged comparably. Window size adapts for short texts.
+
+Inverted: low vocabulary diversity (sloganeering, repetition) scores high as a bait signal.
+
+- `mattr` — moving average type-token ratio
+- `type_token_ratio` — total unique words / total words
+
+### Engagement Bait Score *(optional embeddings)*
+
+When embeddings mode is enabled, the text is embedded using OpenAI `text-embedding-3-small` and scored against precomputed centroids of curated bait and neutral seed examples. **Centroids are computed once on the first embeddings request and cached for the server's lifetime** — subsequent calls do not re-embed the seed examples. Score is the transformed cosine similarity difference (bait centroid vs neutral centroid), normalized to 0–1.
+
+This is the only metric that makes an external API call. If OpenAI is unavailable, `engagement_bait_score` returns `null` and all heuristic metrics still return normally.
 
 ## Tech Stack
 
@@ -37,8 +106,26 @@ This layer is intentionally interpretable, serving as a signal extractor instead
 - Pydantic
 - OpenAI embeddings via `text-embedding-3-small`
 - `python-dotenv` for local environment loading
+- Deployed on Render
 
 ## Quick Start
+
+### Hosted (no setup)
+
+The API is live at `https://engagbaitapi.onrender.com`. No API key or installation needed for heuristic scoring.
+
+```bash
+# Health check
+curl https://engagbaitapi.onrender.com/health
+
+# Analyze text (heuristics only)
+curl -s -X POST "https://engagbaitapi.onrender.com/analyze?embeddings=false" -H "Content-Type: application/json" -d '{"text": "Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious."}'
+
+# Analyze text with embeddings score
+curl -s -X POST "https://engagbaitapi.onrender.com/analyze?embeddings=true" -H "Content-Type: application/json" -d '{"text": "Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious."}'
+```
+
+### Run Locally
 
 ```bash
 python -m venv venv
@@ -50,7 +137,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 5000
 Local configuration:
 
 1. Copy `.env.example` to `.env`
-2. Add your `OPENAI_API_KEY`
+2. Add your `OPENAI_API_KEY` (required only for embeddings scoring)
 
 Local URLs:
 
@@ -59,6 +146,8 @@ Local URLs:
 - Demo: `http://localhost:5000/demo`
 
 ## Endpoints
+
+Base URL: `https://engagbaitapi.onrender.com`
 
 | Method | Path | Description |
 |---|---|---|
@@ -89,13 +178,18 @@ Constraints:
 
 - text length: 50 to 50,000 characters
 
-Example (Powershell):
+Example (curl):
+
+```bash
+curl -s -X POST "https://engagbaitapi.onrender.com/analyze?embeddings=false" \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious."}'
+```
+
+Example (PowerShell, local):
 
 ```powershell
-
 Invoke-RestMethod -Method Post -Uri "http://localhost:5000/analyze?embeddings=false" -ContentType "application/json" -Body (@{ text = "Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious." } | ConvertTo-Json -Compress)
-
-
 ```
 
 Example response:
@@ -145,6 +239,13 @@ Example response:
       "listicle": 0.0
     }
   },
+  "lexical_diversity": {
+    "score": 0.21,
+    "breakdown": {
+      "mattr": 0.79,
+      "type_token_ratio": 0.79
+    }
+  },
   "engagement_bait_score": null,
   "meta": {
     "embeddings_requested": false,
@@ -164,6 +265,8 @@ Notes:
 
 `POST /analyze/batch`
 
+Submit up to 10 texts in one request. The response preserves submission order and includes each caller-supplied `id`.
+
 Request body:
 
 ```json
@@ -181,11 +284,37 @@ Rules:
 - at most 10 items
 - each item must satisfy the same text length validation as `/analyze`
 
-The response preserves the order of the submitted items and includes each caller-supplied `id`.
+Example (curl):
+
+```bash
+curl -s -X POST "https://engagbaitapi.onrender.com/analyze/batch?embeddings=false" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [
+      {"id": "bait", "text": "Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious."},
+      {"id": "neutral", "text": "A review of three transit funding proposals found that ridership increased between 12 and 18 percent in pilot cities. The report recommends further study before statewide adoption and notes that two of the five authors issued a minority opinion citing timeline risks."}
+    ]
+  }'
+```
+
+## Error Reference
+
+All validation errors return `HTTP 422` with this shape:
+
+```json
+{"detail": "...", "field": "..."}
+```
+
+| Trigger | `detail` value |
+|---|---|
+| text under 50 characters | `"Text must be at least 50 characters (got N)"` |
+| text over 50,000 characters | `"Text must be at most 50000 characters (got N)"` |
+| empty batch | `"Batch must include at least 1 item"` |
+| batch over 10 items | `"Batch must include at most 10 items"` |
 
 ## Response Meta
 
-Example meta when ML is requested but OpenAI is unavailable:
+The `meta` object is included in every response and reports the state of the embeddings path:
 
 ```json
 "meta": {
@@ -198,31 +327,38 @@ Example meta when ML is requested but OpenAI is unavailable:
 
 Field meanings:
 
-- `embeddings_requested`: whether the request asked for embeddings scoring
-- `embeddings_used`: whether the embeddings path actually ran
-- `openai_available`: whether the server has a valid OpenAI key configured
-- `vector_backend`: `none` or `centroid`
-
-For the current project:
-
-- `none` means the heuristic layer ran without embeddings
-- `centroid` means OpenAI embeddings were used and scored against the bait/neutral seed centroids
+- `embeddings_requested` — whether the request asked for embeddings scoring
+- `embeddings_used` — whether the embeddings path actually ran
+- `openai_available` — whether the server has a valid OpenAI key configured
+- `vector_backend` — `none` (heuristic only) or `centroid` (embeddings used)
 
 ## Browser Demo
 
-The demo lives at `GET /demo`.
+Live demo: **https://engagbaitapi.onrender.com/demo**
+
+Locally: `GET /demo`
 
 It includes:
 
 - paste-in text analysis
 - a `Use Embeddings` toggle
-- sample inputs for high bait, neutral, and mixed text
-- score cards for all metrics
+- three sample inputs: high bait, neutral, and mixed text
+- score cards for all six metrics
 - raw JSON output for developer inspection
+
+## Embeddings
+
+The OpenAI portion of the project is intentionally narrow and opt-in:
+
+- embeddings power `engagement_bait_score` only
+- the scorer uses centroid similarity over curated bait and neutral seed examples
+- centroids are computed once on first use and cached in memory for the server's lifetime
+- heuristic metrics remain the explainable, deterministic layer
+- if OpenAI is unavailable, the API still returns all heuristic results cleanly and reports the reason in `meta`
 
 ## Embeddings Benchmark
 
-The project includes an internal benchmark runner for reviewing OpenAI-backed embeddings behavior.
+The project includes an internal benchmark runner for reviewing embeddings behavior on curated examples.
 
 Run:
 
@@ -235,14 +371,7 @@ Requirements:
 - a valid `OPENAI_API_KEY`
 - benchmark examples in `data/ml_benchmark_examples.json`
 
-The script prints:
-
-- benchmark id and label
-- Embeddings score
-- heuristic scores
-- response metadata
-- expected qualitative behavior
-- notes for manual review
+The script prints per-example: id, label, embeddings score, all heuristic scores, response metadata, and notes for manual review.
 
 This is a manual evaluation tool, not a normal CI test.
 
@@ -254,14 +383,14 @@ Run the automated tests with:
 python -m pytest -q
 ```
 
-## OpenAI Notes
+## What It Does Not Do
 
-The OpenAI portion of the project is intentionally narrow:
+- Fact check claims
+- Classify political ideology
+- Detect truthfulness
+- Perform content moderation
 
-- embeddings power `engagement_bait_score`
-- the scorer currently uses centroid similarity over curated bait and neutral seed examples
-- heuristic metrics remain the explainable layer
-- if OpenAI is unavailable, the API still returns all heuristic results cleanly
+The heuristic metrics are transparent signal extractors, not a unified engagement bait score. They are intentionally kept separate so callers can interpret each signal on its own terms.
 
 ## Project Status
 
