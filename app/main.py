@@ -108,8 +108,8 @@ async def root():
     }
 
 
-@app.get(
-    "/health",
+@app.api_route(
+    "/health", methods=["GET","HEAD"],
     tags=["System"],
     summary="Health check",
     description=(
