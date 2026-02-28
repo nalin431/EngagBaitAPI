@@ -3,6 +3,11 @@ from pathlib import Path
 
 _LEXICON_DIR = Path(__file__).resolve().parent / "custom"
 _CACHE: dict[str, frozenset[str]] = {}
+_WEIGHTED_CACHE: dict[str, dict[str, float]] = {}
+
+# Valence tier → weight mapping. Tiers are annotated in lexicon files as word:N.
+# Conservative values; tune against scripts/run_ml_benchmark.py if needed.
+_TIER_WEIGHTS: dict[int, float] = {1: 1.0, 2: 1.3, 3: 1.6}
 
 
 def load_lexicon(name: str) -> frozenset[str]:
@@ -20,6 +25,48 @@ def load_lexicon(name: str) -> frozenset[str]:
             terms.add(line)
     _CACHE[name] = frozenset(terms)
     return _CACHE[name]
+
+
+def load_weighted_lexicon(name: str) -> dict[str, float]:
+    """
+    Load lexicon with optional ':N' valence tier annotations (N = 1, 2, or 3).
+    Returns {word: weight}. Bare entries (no colon) default to weight 1.0.
+    Cached separately from load_lexicon.
+    """
+    if name in _WEIGHTED_CACHE:
+        return _WEIGHTED_CACHE[name]
+    path = _LEXICON_DIR / f"{name}.txt"
+    if not path.exists():
+        _WEIGHTED_CACHE[name] = {}
+        return {}
+    result: dict[str, float] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip().lower()
+        if not line or line.startswith("#"):
+            continue
+        if ":" in line:
+            word, _, tier_str = line.rpartition(":")
+            word = word.strip()
+            try:
+                weight = _TIER_WEIGHTS.get(int(tier_str.strip()), 1.0)
+            except ValueError:
+                weight = 1.0
+        else:
+            word = line
+            weight = 1.0
+        result[word] = weight
+    _WEIGHTED_CACHE[name] = result
+    return result
+
+
+def get_arousal_terms() -> frozenset[str]:
+    """Return arousal words as a frozenset (tier annotations stripped)."""
+    return frozenset(load_weighted_lexicon("arousal").keys())
+
+
+def get_arousal_weighted_terms() -> dict[str, float]:
+    """Return {word: valence_weight} for the arousal lexicon."""
+    return load_weighted_lexicon("arousal")
 
 
 def get_urgency_terms() -> frozenset[str]:
@@ -60,10 +107,6 @@ def get_tradeoff_terms() -> frozenset[str]:
 
 def get_conditional_terms() -> frozenset[str]:
     return load_lexicon("conditional")
-
-
-def get_arousal_terms() -> frozenset[str]:
-    return load_lexicon("arousal")
 
 
 def get_curiosity_gap_phrases() -> frozenset[str]:

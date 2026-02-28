@@ -55,40 +55,40 @@ def test_analyze_ok():
     assert "conditional_absence" in data["counterargument_absence"]["breakdown"]
 
 
-def test_analyze_ml_false_meta():
+def test_analyze_embeddings_false_meta():
     text = "You must act now! This is the last chance. Everyone knows they are evil and we must fight back. The truth is simple: they are always wrong and we will never give up. Do not miss out!"
-    r = client.post("/analyze?ml=false", json={"text": text})
+    r = client.post("/analyze?embeddings=false", json={"text": text})
     assert r.status_code == 200
     data = r.json()
     assert data["engagement_bait_score"] is None
     assert data["meta"] == {
-        "ml_requested": False,
-        "ml_used": False,
+        "embeddings_requested": False,
+        "embeddings_used": False,
         "openai_available": _openai_enabled(),
         "vector_backend": "none",
     }
 
 
-def test_analyze_ml_true_meta():
+def test_analyze_embeddings_true_meta():
     text = "You must act now! This is the last chance. Everyone knows they are evil and we must fight back. The truth is simple: they are always wrong and we will never give up. Do not miss out!"
-    r = client.post("/analyze?ml=true", json={"text": text})
+    r = client.post("/analyze?embeddings=true", json={"text": text})
     assert r.status_code == 200
     data = r.json()
-    assert data["meta"]["ml_requested"] is True
+    assert data["meta"]["embeddings_requested"] is True
     assert data["meta"]["openai_available"] is _openai_enabled()
     if _openai_enabled():
         assert isinstance(data["engagement_bait_score"], (int, float))
-        assert data["meta"]["ml_used"] is True
+        assert data["meta"]["embeddings_used"] is True
         assert data["meta"]["vector_backend"] == "centroid"
     else:
         assert data["engagement_bait_score"] is None
-        assert data["meta"]["ml_used"] is False
+        assert data["meta"]["embeddings_used"] is False
         assert data["meta"]["vector_backend"] == "none"
 
 
 def test_analyze_batch_ok():
     r = client.post(
-        "/analyze/batch?ml=false",
+        "/analyze/batch?embeddings=false",
         json={
             "items": [
                 {

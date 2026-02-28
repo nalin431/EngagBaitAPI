@@ -34,6 +34,35 @@ already too late
 tonight
 do not wait until tomorrow
 while there is still time
+breaking now
+happening now
+just in
+just announced
+developing story
+time sensitive
+window closing
+your last opportunity
+don't sleep on this
+you're running out of time
+the clock is ticking
+tick tock
+hours left
+days left
+final warning
+final notice
+last warning
+act fast
+move fast
+time is running out
+before it's gone
+before it closes
+critical update
+right this second
+this very moment
+don't hesitate
+no time to waste
+every second counts
+opportunity closing
 
 # Scarcity
 limited
@@ -47,6 +76,27 @@ rare
 scarce
 first come first served
 supplies limited
+limited edition
+limited supply
+limited spots
+limited seats
+only a few
+few remaining
+slots available
+almost full
+nearly sold out
+high demand
+going quickly
+not for everyone
+invite only
+select few
+handpicked
+waitlist only
+while stock lasts
+extremely limited
+once in a lifetime
+never again
+won't happen again
 
 # FOMO
 don't miss out
@@ -72,3 +122,22 @@ you will regret ignoring it
 the truth will be buried
 people staying quiet
 staying quiet
+you don't want to miss this
+others already know
+the smart ones already
+while you're sleeping
+they're already doing this
+everyone is switching to
+don't be the last to know
+others figured it out
+you're already behind
+don't get left behind
+the movement has started
+join the movement
+wake up to the truth
+why aren't you doing this
+don't let them win
+everyone is watching
+millions already know
+the world is waking up
+you're being left behind

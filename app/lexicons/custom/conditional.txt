@@ -1,4 +1,4 @@
-# Conditional clauses - presence reduces simplification score (excludes common: if, when, may, might, could, would)
+# Conditional / epistemic hedging - presence reduces simplification score
 unless
 provided
 assuming
@@ -19,3 +19,56 @@ depending
 likely
 unlikely
 subject to
+assuming that
+in the event
+provided that
+on condition that
+tentatively
+arguably
+ostensibly
+apparently
+seemingly
+supposedly
+under certain circumstances
+in certain cases
+generally speaking
+broadly speaking
+often
+sometimes
+occasionally
+rarely
+frequently
+typically
+usually
+normally
+in most cases
+in some circumstances
+all else being equal
+under normal conditions
+in theory
+in practice
+to some degree
+to some extent
+up to a point
+with caveats
+with reservations
+with some exceptions
+where applicable
+where relevant
+as a rule
+as a general rule
+it is possible
+it is likely
+it seems
+it appears
+evidence suggests
+data suggests
+research suggests
+studies suggest
+may indicate
+could indicate
+tends to
+is associated with
+correlates with
+partially
+conditionally

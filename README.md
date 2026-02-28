@@ -5,9 +5,9 @@ Analyze structural engagement-bait patterns in text. The API combines determinis
 This project is currently optimized around:
 - a FastAPI backend
 - an explainable deterministic layer
-- an OpenAI-powered centroid ML score
+- an OpenAI-powered centroid embeddings score
 - a lightweight browser demo
-- an internal ML benchmark workflow
+- an internal embeddings benchmark workflow
 
 ## What It Does
 
@@ -15,7 +15,7 @@ This project is currently optimized around:
 - Returns transparent heuristic breakdowns for each metric
 - Optionally adds `engagement_bait_score` using OpenAI embeddings
 - Includes a lightweight browser demo for quick judging and testing
-- Provides an internal benchmark script for reviewing ML behavior on curated examples
+- Provides an internal benchmark script for reviewing embeddings behavior on curated examples
 
 ## What It Does Not Do
 
@@ -83,8 +83,8 @@ Request body:
 
 Query param:
 
-- `ml=true|false`
-- If omitted, ML defaults to on only when `OPENAI_API_KEY` is available
+- `embeddings=true|false`
+- If omitted, embeddings defaults to on only when `OPENAI_API_KEY` is available
 
 Constraints:
 
@@ -94,7 +94,7 @@ Example:
 
 ```Powershell
 
-Invoke-RestMethod -Method Post -Uri "http://localhost:5000/analyze?ml=false" -ContentType "application/json" -Body (@{ text = "Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious." } | ConvertTo-Json -Compress)
+Invoke-RestMethod -Method Post -Uri "http://localhost:5000/analyze?embeddings=false" -ContentType "application/json" -Body (@{ text = "Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious." } | ConvertTo-Json -Compress)
 
 
 ```
@@ -148,8 +148,8 @@ Example response:
   },
   "engagement_bait_score": null,
   "meta": {
-    "ml_requested": false,
-    "ml_used": false,
+    "embeddings_requested": false,
+    "embeddings_used": false,
     "openai_available": false,
     "vector_backend": "none"
   }
@@ -190,8 +190,8 @@ Each analysis response includes:
 
 ```json
 "meta": {
-  "ml_requested": true,
-  "ml_used": false,
+  "embeddings_requested": true,
+  "embeddings_used": false,
   "openai_available": false,
   "vector_backend": "none"
 }
@@ -199,14 +199,14 @@ Each analysis response includes:
 
 Field meanings:
 
-- `ml_requested`: whether the request asked for ML
-- `ml_used`: whether the ML path actually ran
+- `embeddings_requested`: whether the request asked for embeddings scoring
+- `embeddings_used`: whether the embeddings path actually ran
 - `openai_available`: whether the server has a valid OpenAI key configured
 - `vector_backend`: `none` or `centroid`
 
 For the current project:
 
-- `none` means the heuristic layer ran without ML
+- `none` means the heuristic layer ran without embeddings
 - `centroid` means OpenAI embeddings were used and scored against the bait/neutral seed centroids
 
 ## Browser Demo
@@ -216,14 +216,14 @@ The demo lives at `GET /demo`.
 It includes:
 
 - paste-in text analysis
-- a `Use ML` toggle
+- a `Use Embeddings` toggle
 - sample inputs for high bait, neutral, and mixed text
 - score cards for all metrics
 - raw JSON output for developer inspection
 
-## ML Benchmark
+## Embeddings Benchmark
 
-The project includes an internal benchmark runner for reviewing OpenAI-backed ML behavior.
+The project includes an internal benchmark runner for reviewing OpenAI-backed embeddings behavior.
 
 Run:
 
@@ -239,7 +239,7 @@ Requirements:
 The script prints:
 
 - benchmark id and label
-- ML score
+- Embeddings score
 - heuristic scores
 - response metadata
 - expected qualitative behavior

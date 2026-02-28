@@ -37,8 +37,8 @@ class MetricBreakdown(BaseModel):
 
 
 class AnalyzeMeta(BaseModel):
-    ml_requested: bool
-    ml_used: bool
+    embeddings_requested: bool
+    embeddings_used: bool
     openai_available: bool
     vector_backend: Literal["none", "centroid"]
 
@@ -49,9 +49,10 @@ class AnalyzeResponse(BaseModel):
     arousal_intensity: MetricBreakdown
     counterargument_absence: MetricBreakdown
     claim_volume_vs_depth: MetricBreakdown
+    lexical_diversity: MetricBreakdown
     engagement_bait_score: float | None = Field(
         default=None,
-        description="ML-based engagement bait score (0-1); null when OpenAI unavailable",
+        description="Embedding-based engagement bait score (0-1); null when OpenAI unavailable",
     )
     meta: AnalyzeMeta
 
