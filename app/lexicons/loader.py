@@ -54,15 +54,6 @@ def get_urgency_sections() -> dict[str, frozenset[str]]:
 def get_moralized_terms() -> frozenset[str]:
     return load_lexicon("moralized")
 
-
-def get_binary_connectors() -> frozenset[str]:
-    return load_lexicon("binary_connectors")
-
-
-def get_single_cause_markers() -> frozenset[str]:
-    return load_lexicon("single_cause")
-
-
 def get_tradeoff_terms() -> frozenset[str]:
     return load_lexicon("tradeoff")
 

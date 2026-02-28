@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.main import _openai_enabled
 
 client = TestClient(app)
 
@@ -20,7 +21,7 @@ def test_health():
     data = r.json()
     assert data["status"] == "ok"
     assert "openai_enabled" in data
-    assert "actian_enabled" in data
+    assert "actian_enabled" not in data
 
 
 def test_demo_page():
@@ -39,7 +40,7 @@ def test_analyze_ok():
     assert "arousal_intensity" in data
     assert "counterargument_absence" in data
     assert "claim_volume_vs_depth" in data
-    assert data["meta"]["vector_backend"] in {"none", "centroid", "actian"}
+    assert data["meta"]["vector_backend"] in {"none", "centroid"}
     for key in (
         "urgency_pressure",
         "evidence_density",
@@ -63,23 +64,26 @@ def test_analyze_ml_false_meta():
     assert data["meta"] == {
         "ml_requested": False,
         "ml_used": False,
-        "openai_available": False,
+        "openai_available": _openai_enabled(),
         "vector_backend": "none",
     }
 
 
-def test_analyze_ml_true_without_openai_meta():
+def test_analyze_ml_true_meta():
     text = "You must act now! This is the last chance. Everyone knows they are evil and we must fight back. The truth is simple: they are always wrong and we will never give up. Do not miss out!"
     r = client.post("/analyze?ml=true", json={"text": text})
     assert r.status_code == 200
     data = r.json()
-    assert data["engagement_bait_score"] is None
-    assert data["meta"] == {
-        "ml_requested": True,
-        "ml_used": False,
-        "openai_available": False,
-        "vector_backend": "none",
-    }
+    assert data["meta"]["ml_requested"] is True
+    assert data["meta"]["openai_available"] is _openai_enabled()
+    if _openai_enabled():
+        assert isinstance(data["engagement_bait_score"], (int, float))
+        assert data["meta"]["ml_used"] is True
+        assert data["meta"]["vector_backend"] == "centroid"
+    else:
+        assert data["engagement_bait_score"] is None
+        assert data["meta"]["ml_used"] is False
+        assert data["meta"]["vector_backend"] == "none"
 
 
 def test_analyze_batch_ok():

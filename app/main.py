@@ -31,12 +31,6 @@ def _openai_enabled() -> bool:
     return bool(os.environ.get("OPENAI_API_KEY", "").strip().startswith("sk-"))
 
 
-def _actian_enabled() -> bool:
-    from app.ml.vector_store import _actian_available
-
-    return _actian_available()
-
-
 @app.get("/", summary="API overview", description="Return the core API links and metadata.")
 async def root():
     return {
@@ -60,7 +54,6 @@ async def health():
     return {
         "status": "ok",
         "openai_enabled": _openai_enabled(),
-        "actian_enabled": _actian_enabled(),
     }
 
 

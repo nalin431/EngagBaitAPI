@@ -7,3 +7,15 @@ depending on
 contingent
 perhaps
 possibly
+if
+when
+may
+might
+could
+would
+can
+depends
+depending
+likely
+unlikely
+subject to

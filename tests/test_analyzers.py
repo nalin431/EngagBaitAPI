@@ -18,10 +18,22 @@ def test_urgency_low():
     assert r.score <= 0.5
 
 
+def test_urgency_prose_style():
+    t = "Act now before they scrub this from public view. Smart people know the truth will be buried if we wait until tomorrow."
+    r = analyze_urgency(t)
+    assert r.score > 0.0
+
+
 def test_evidence_low():
     t = "Everyone knows this is true. No citations needed. Just trust me."
     r = analyze_evidence(t)
     assert r.score >= 0.5
+
+
+def test_evidence_analytical_text():
+    t = "A review of 38 climate adaptation studies found modest benefits for coastal planning, although authors noted significant variation in methodology and regional constraints."
+    r = analyze_evidence(t)
+    assert r.score < 1.0
 
 
 def test_arousal_high():
@@ -42,6 +54,12 @@ def test_counterargument_absence_low():
     t = "This approach may help in some cases, although the tradeoffs depend on cost, staffing, and whether implementation succeeds locally."
     r = analyze_counterargument_absence(t)
     assert r.score <= 0.5
+
+
+def test_counterargument_absence_contrastive_text():
+    t = "Supporters say the policy could protect consumers quickly, but critics argue the timeline is unrealistic and the data is still incomplete."
+    r = analyze_counterargument_absence(t)
+    assert r.score < 1.0
 
 
 def test_claim_volume():

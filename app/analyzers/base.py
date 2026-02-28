@@ -12,7 +12,7 @@ def count_to_score(count: int, thresholds: tuple[int, int]) -> float:
     thresholds = (low, high): count >= low -> start rising, count >= high -> 1.0
     """
     low, high = thresholds
-    if count <= low:
+    if count < low:
         return 0.0
     if count >= high:
         return 1.0

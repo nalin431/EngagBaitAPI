@@ -1,8 +1,13 @@
 # Engagement Bait API
 
-Analyze structural engagement-bait patterns in text. The API scores urgency pressure, low evidence signal, arousal intensity, counterargument absence, claim volume vs depth, and an optional OpenAI-powered semantic similarity signal.
+Analyze structural engagement-bait patterns in text. The API combines deterministic heuristic signals with an optional OpenAI embedding-based semantic similarity score.
 
-This project is built for HackIllinois 2026 with a primary focus on API quality and developer experience.
+This project is currently optimized around:
+- a FastAPI backend
+- an explainable deterministic layer
+- an OpenAI-powered centroid ML score
+- a lightweight browser demo
+- an internal ML benchmark workflow
 
 ## What It Does
 
@@ -10,7 +15,7 @@ This project is built for HackIllinois 2026 with a primary focus on API quality 
 - Returns transparent heuristic breakdowns for each metric
 - Optionally adds `engagement_bait_score` using OpenAI embeddings
 - Includes a lightweight browser demo for quick judging and testing
-- Treats the `evidence_density` field as an inverted signal, where higher means less evidence
+- Provides an internal benchmark script for reviewing ML behavior on curated examples
 
 ## What It Does Not Do
 
@@ -25,6 +30,7 @@ This project is built for HackIllinois 2026 with a primary focus on API quality 
 - Python 3.10+
 - Pydantic
 - OpenAI embeddings via `text-embedding-3-small`
+- `python-dotenv` for local environment loading
 
 ## Quick Start
 
@@ -35,11 +41,10 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Optional:
+Local configuration:
 
-```bash
-set OPENAI_API_KEY=your_key_here
-```
+1. Copy `.env.example` to `.env`
+2. Add your `OPENAI_API_KEY`
 
 Local URLs:
 
@@ -52,7 +57,7 @@ Local URLs:
 | Method | Path | Description |
 |---|---|---|
 | GET | `/` | API overview and key links |
-| GET | `/health` | Health status and integration flags |
+| GET | `/health` | Health status and OpenAI availability |
 | GET | `/demo` | Lightweight browser demo |
 | POST | `/analyze` | Analyze one text |
 | POST | `/analyze/batch` | Analyze up to 10 texts |
@@ -91,11 +96,11 @@ Example response:
 ```json
 {
   "urgency_pressure": {
-    "score": 0.67,
+    "score": 0.69,
     "breakdown": {
       "time_pressure": 1.0,
       "scarcity": 0.0,
-      "fomo": 1.0
+      "fomo": 0.67
     }
   },
   "evidence_density": {
@@ -107,29 +112,29 @@ Example response:
     }
   },
   "arousal_intensity": {
-    "score": 0.46,
+    "score": 0.35,
     "breakdown": {
-      "emotion_words": 0.33,
+      "emotion_words": 0.67,
       "exclamation_density": 0.0,
       "question_density": 0.0,
       "caps_ratio": 0.0,
-      "moralized_language": 0.25,
+      "moralized_language": 0.75,
       "superlative_density": 0.0,
-      "curiosity_gap": 0.0
+      "curiosity_gap": 1.0
     }
   },
   "counterargument_absence": {
-    "score": 0.63,
+    "score": 1.0,
     "breakdown": {
       "tradeoff_absence": 1.0,
-      "conditional_absence": 0.25
+      "conditional_absence": 1.0
     }
   },
   "claim_volume_vs_depth": {
-    "score": 0.6,
+    "score": 0.62,
     "breakdown": {
-      "claims_per_word": 0.64,
-      "explanation_depth": 0.19,
+      "claims_per_word": 1.0,
+      "explanation_depth": 0.13,
       "listicle": 0.0
     }
   },
@@ -143,9 +148,10 @@ Example response:
 }
 ```
 
-Note: `evidence_density` is an inverted bait signal. Higher values mean the text includes less evidence, not more.
+Notes:
 
-`counterargument_absence` is also bait-oriented: higher values mean the text does less to acknowledge tradeoffs, conditions, or competing considerations.
+- `evidence_density` is an inverted bait signal. Higher values mean the text includes less evidence, not more.
+- `counterargument_absence` is also bait-oriented. Higher values mean the text does less to acknowledge tradeoffs, conditions, or competing considerations.
 
 ## Analyze In Batch
 
@@ -172,7 +178,7 @@ The response preserves the order of the submitted items and includes each caller
 
 ## Response Meta
 
-Each analysis response now includes:
+Each analysis response includes:
 
 ```json
 "meta": {
@@ -188,12 +194,12 @@ Field meanings:
 - `ml_requested`: whether the request asked for ML
 - `ml_used`: whether the ML path actually ran
 - `openai_available`: whether the server has a valid OpenAI key configured
-- `vector_backend`: `none`, `centroid`, or `actian`
+- `vector_backend`: `none` or `centroid`
 
-For the current submission, `vector_backend` will normally be:
+For the current project:
 
-- `none` when ML is off or unavailable
-- `centroid` when OpenAI embeddings are used
+- `none` means the heuristic layer ran without ML
+- `centroid` means OpenAI embeddings were used and scored against the bait/neutral seed centroids
 
 ## Browser Demo
 
@@ -207,20 +213,35 @@ It includes:
 - score cards for all metrics
 - raw JSON output for developer inspection
 
-## Error Responses
+## ML Benchmark
 
-Common validation errors:
+The project includes an internal benchmark runner for reviewing OpenAI-backed ML behavior.
 
-- text too short
-- text too long
-- empty batch
-- batch larger than 10 items
+Run:
 
-All validation errors return HTTP `422`.
+```bash
+python -m scripts.run_ml_benchmark
+```
+
+Requirements:
+
+- a valid `OPENAI_API_KEY`
+- benchmark examples in `data/ml_benchmark_examples.json`
+
+The script prints:
+
+- benchmark id and label
+- ML score
+- heuristic scores
+- response metadata
+- expected qualitative behavior
+- notes for manual review
+
+This is a manual evaluation tool, not a normal CI test.
 
 ## Testing
 
-Run:
+Run the automated tests with:
 
 ```bash
 python -m pytest -q
@@ -231,14 +252,13 @@ python -m pytest -q
 The OpenAI portion of the project is intentionally narrow:
 
 - embeddings power `engagement_bait_score`
+- the scorer currently uses centroid similarity over curated bait and neutral seed examples
 - heuristic metrics remain the explainable layer
 - if OpenAI is unavailable, the API still returns all heuristic results cleanly
 
 ## Project Status
 
-This submission is optimized for:
+This submission is currently optimized for:
 
 - Stripe Track
 - Best Use of OpenAI API
-
-Actian Vector support remains future-facing and is not treated as a shipped dependency for the current submission.

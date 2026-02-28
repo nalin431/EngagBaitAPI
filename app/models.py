@@ -40,7 +40,7 @@ class AnalyzeMeta(BaseModel):
     ml_requested: bool
     ml_used: bool
     openai_available: bool
-    vector_backend: Literal["none", "centroid", "actian"]
+    vector_backend: Literal["none", "centroid"]
 
 
 class AnalyzeResponse(BaseModel):

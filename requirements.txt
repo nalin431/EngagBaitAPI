@@ -3,4 +3,4 @@ uvicorn
 httpx>=0.26.0
 openai>=1.0.0
 tenacity>=8.0.0
-dotenv
+python-dotenv>=1.0.0

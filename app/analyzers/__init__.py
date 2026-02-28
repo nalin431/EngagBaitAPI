@@ -2,6 +2,10 @@ import os
 
 from app.models import AnalyzeMeta, AnalyzeResponse
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 
 def analyze_text(text: str, ml: bool | None = None) -> AnalyzeResponse:
     """Analyze text and return heuristic metrics plus optional ML score."""

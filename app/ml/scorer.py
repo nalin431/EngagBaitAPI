@@ -83,19 +83,12 @@ def _score_from_centroids(emb: list[float]) -> float:
 def compute_engagement_bait_result(text: str) -> tuple[float | None, str]:
     """
     Compute engagement_bait_score (0-1) and report which backend produced it.
-    When USE_ACTIAN=true and Actian available: k-NN from vector store.
-    Else: centroid similarity (Phase 2a). Returns None if OpenAI unavailable.
+    Returns None if OpenAI is unavailable. Uses centroid similarity over the
+    curated bait and neutral seed sets.
     """
     emb = get_embedding(text)
     if emb is None:
         return None, "none"
-
-    from app.ml.vector_store import search_similar
-
-    neighbors = search_similar(emb, k=5)
-    if neighbors:
-        bait_count = sum(1 for n in neighbors if n.get("label") == "bait")
-        return bait_count / len(neighbors), "actian"
 
     if not _ensure_centroids():
         return None, "none"
