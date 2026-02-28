@@ -12,6 +12,7 @@ The API is publicly hosted and ready to use — no setup required.
 |---|---|
 | Base URL | `https://engagbaitapi.onrender.com` |
 | Interactive demo | https://engagbaitapi.onrender.com/demo |
+| API reference (ReDoc) | https://engagbaitapi.onrender.com/redoc |
 | API docs (Swagger) | https://engagbaitapi.onrender.com/docs |
 | Health check | https://engagbaitapi.onrender.com/health |
 
@@ -101,12 +102,18 @@ This is the only metric that makes an external API call. If OpenAI is unavailabl
 
 ## Tech Stack
 
-- FastAPI
-- Python 3.10+
-- Pydantic
-- OpenAI embeddings via `text-embedding-3-small`
-- `python-dotenv` for local environment loading
-- Deployed on Render
+- **FastAPI** — async Python web framework; chosen for automatic OpenAPI schema generation, which drives both the Swagger (`/docs`) and ReDoc (`/redoc`) documentation pages with zero extra configuration
+- **Pydantic** — data validation layer; enforces strict input constraints (text length, batch size) and returns structured, descriptive error messages on every bad request
+- **Python 3.10+** — all heuristic analyzers are pure stdlib Python with no heavy NLP dependencies, keeping the install footprint small and the analysis path fully auditable
+- **OpenAI `text-embedding-3-small`** — lightweight, cost-efficient embedding model used for the optional semantic scoring layer; isolated from the heuristic path so the API degrades gracefully when unavailable
+- **`python-dotenv`** — loads `OPENAI_API_KEY` from a local `.env` file for development; production key is set via Render environment variables
+- **Render** — zero-config deployment from GitHub; auto-deploys on push, keeps the API publicly accessible without any infrastructure management
+
+## API Guarantees
+
+- **Idempotent** — heuristic scores are fully deterministic. The same text submitted twice will always return the exact same six scores and breakdowns, with no randomness or model state involved.
+- **Stateful embeddings warm-up** — on the first request with embeddings enabled, the server embeds a small set of curated seed examples and caches the resulting bait and neutral centroids in memory. Every subsequent embeddings request uses those cached centroids — no repeated seed embedding calls. The `/health` endpoint exposes whether the OpenAI path is live.
+- **Graceful degradation** — if OpenAI is unavailable or the key is missing, all six heuristic metrics still return normally. The `meta` object in every response reports exactly what ran and why.
 
 ## Quick Start
 
