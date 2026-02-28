@@ -23,14 +23,15 @@ def test_analyze_ok():
     data = r.json()
     assert "urgency_pressure" in data
     assert "evidence_density" in data
-    assert "overconfidence" in data
     assert "arousal_intensity" in data
-    assert "ingroup_outgroup" in data
     assert "narrative_simplification" in data
     assert "claim_volume_vs_depth" in data
     for k, v in data.items():
-        assert "score" in v
-        assert "breakdown" in v
+        if k == "engagement_bait_score":
+            assert v is None or isinstance(v, (int, float))
+        else:
+            assert "score" in v
+            assert "breakdown" in v
 
 
 def test_analyze_validation_short():

@@ -1,6 +1,4 @@
-# Single-cause language markers
-because of
-due to
+# Single-cause language markers (excludes common neutral: because of, due to)
 the reason
 the cause
 root cause

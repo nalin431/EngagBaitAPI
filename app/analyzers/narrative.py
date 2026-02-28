@@ -9,7 +9,7 @@ from app.lexicons.loader import (
 )
 
 _BINARY = get_binary_connectors() or {"either or", "either-or", "or else", "us versus them", "us vs them"}
-_SINGLE_CAUSE = get_single_cause_markers() or {"because of", "due to", "the reason", "root cause", "the cause"}
+_SINGLE_CAUSE = get_single_cause_markers() or {"the reason", "root cause", "the cause", "it's all"}
 _TRADEOFF = get_tradeoff_terms() or {"however", "although", "trade-off", "tradeoff", "on the other hand"}
 _CONDITIONAL = get_conditional_terms() or {"if", "when", "unless", "depending on"}
 
@@ -30,7 +30,7 @@ def analyze_narrative(text: str) -> MetricBreakdown:
     conditional = sum(1 for w in words if w.rstrip(".,;:!?") in _CONDITIONAL)
 
     s_binary = clamp_score(min(1, binary / 2))
-    s_single = clamp_score(min(1, single_cause / 3))
+    s_single = clamp_score(min(1, single_cause / 5))
     s_tradeoff_absence = clamp_score(1 - tradeoff / max(1, wc / 30))
     s_conditional_absence = clamp_score(1 - conditional / max(1, wc / 25))
 

@@ -38,6 +38,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 
 @app.post("/analyze", response_model=AnalyzeResponse)
-async def analyze(request: AnalyzeRequest):
+async def analyze(request: AnalyzeRequest, ml: bool | None = None):
+    """Analyze text. Pass ?ml=true|false to enable/disable ML layer (default: true when OPENAI_API_KEY set)."""
     from app.analyzers import analyze_text
-    return analyze_text(request.text)
+    return analyze_text(request.text, ml=ml)

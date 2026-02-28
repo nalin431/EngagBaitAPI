@@ -34,9 +34,10 @@ def analyze_evidence(text: str) -> MetricBreakdown:
     # Evidence density: higher = more evidence. Inverse for "engagement bait" score:
     # low evidence density = more bait-like. So we invert: score = 1 - normalized_evidence
     words = len(text.split()) or 1
-    c_norm = clamp_score(1 - min(1, citations / max(1, words / 50)))
-    s_norm = clamp_score(1 - min(1, stats / max(1, words / 30)))
-    e_norm = clamp_score(1 - min(1, external / max(1, words / 100)))
+    scale = max(1, words / 40)  # unified scaling for citations, stats, external
+    c_norm = clamp_score(1 - min(1, citations / scale))
+    s_norm = clamp_score(1 - min(1, stats / scale))
+    e_norm = clamp_score(1 - min(1, external / scale))
     score = (c_norm + s_norm + e_norm) / 3
     return MetricBreakdown(
         score=round(score, 2),

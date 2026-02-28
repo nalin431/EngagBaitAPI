@@ -1,15 +1,9 @@
-# Conditional clauses - presence reduces simplification score
-if
-when
+# Conditional clauses - presence reduces simplification score (excludes common: if, when, may, might, could, would)
 unless
 provided
 assuming
 in case
 depending on
 contingent
-might
-could
-would
-may
 perhaps
 possibly

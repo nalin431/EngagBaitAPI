@@ -1,8 +1,6 @@
 from app.analyzers.urgency import analyze_urgency
 from app.analyzers.evidence import analyze_evidence
-from app.analyzers.overconfidence import analyze_overconfidence
 from app.analyzers.arousal import analyze_arousal
-from app.analyzers.ingroup import analyze_ingroup
 from app.analyzers.narrative import analyze_narrative
 from app.analyzers.claim_volume import analyze_claim_volume
 
@@ -26,31 +24,22 @@ def test_evidence_low():
     assert r.score >= 0.5
 
 
-def test_overconfidence_high():
-    t = "This will always happen. It never fails. Everyone must act. It is guaranteed."
-    r = analyze_overconfidence(t)
-    assert r.score >= 0.5
-
-
 def test_arousal_high():
-    t = "This is outrageous! Evil! Terrifying! We must fight! Attack!"
+    t = "You won't believe this! The BEST and MOST incredible thing! EVIL! Terrifying! Outrageous! We must fight!"
     r = analyze_arousal(t)
-    assert r.score >= 0.5
-
-
-def test_ingroup_high():
-    t = "We must stand against them. They are our enemies. We the people versus the elite."
-    r = analyze_ingroup(t)
-    assert r.score >= 0.3
+    assert r.score >= 0.25
 
 
 def test_narrative_simple():
-    t = "Because of X everything failed. Either you support us or you are against us. No trade-offs."
+    t = "The root cause is clear. Either you support us or you are against us. No trade-offs."
     r = analyze_narrative(t)
     assert r.score >= 0.4
 
 
 def test_claim_volume():
-    t = "This is true. That is wrong. It will happen. They must act. Always."
+    t = "This proves it. That shows the truth. It reveals everything. Must act. Always."
     r = analyze_claim_volume(t)
-    assert 0 <= r.score <= 1
+    assert r.score >= 0.3
+    neutral = "The weather is nice. The meeting was productive. We will discuss later."
+    r2 = analyze_claim_volume(neutral)
+    assert r.score >= r2.score

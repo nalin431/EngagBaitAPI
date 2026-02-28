@@ -26,16 +26,29 @@ def get_urgency_terms() -> frozenset[str]:
     return load_lexicon("urgency")
 
 
-def get_absolutist_terms() -> frozenset[str]:
-    return load_lexicon("absolutist")
-
-
-def get_hedging_terms() -> frozenset[str]:
-    return load_lexicon("hedging")
-
-
-def get_strong_modal_terms() -> frozenset[str]:
-    return load_lexicon("strong_modals")
+def get_urgency_sections() -> dict[str, frozenset[str]]:
+    """Return {time_pressure, scarcity, fomo} from urgency.txt with # section headers."""
+    path = _LEXICON_DIR / "urgency.txt"
+    result: dict[str, set[str]] = {"time_pressure": set(), "scarcity": set(), "fomo": set()}
+    current: str | None = None
+    if not path.exists():
+        return {k: frozenset() for k in result}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line_lower = line.strip().lower()
+        if not line_lower:
+            continue
+        if line_lower.startswith("#"):
+            rest = line_lower[1:].strip()
+            if "time pressure" in rest or "urgency" in rest:
+                current = "time_pressure"
+            elif "scarcity" in rest:
+                current = "scarcity"
+            elif "fomo" in rest:
+                current = "fomo"
+            continue
+        if current:
+            result[current].add(line_lower)
+    return {k: frozenset(v) if v else frozenset() for k, v in result.items()}
 
 
 def get_moralized_terms() -> frozenset[str]:
@@ -58,9 +71,13 @@ def get_conditional_terms() -> frozenset[str]:
     return load_lexicon("conditional")
 
 
-def get_ingroup_terms() -> frozenset[str]:
-    return load_lexicon("ingroup")
-
-
 def get_arousal_terms() -> frozenset[str]:
     return load_lexicon("arousal")
+
+
+def get_curiosity_gap_phrases() -> frozenset[str]:
+    return load_lexicon("curiosity_gap")
+
+
+def get_superlative_terms() -> frozenset[str]:
+    return load_lexicon("superlatives")
