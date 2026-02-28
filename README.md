@@ -45,7 +45,7 @@ This layer is intentionally interpretable, serving as a signal extractor instead
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 5000
 ```
 
 Local configuration:
@@ -55,9 +55,9 @@ Local configuration:
 
 Local URLs:
 
-- API: `http://localhost:8000`
-- Docs: `http://localhost:8000/docs`
-- Demo: `http://localhost:8000/demo`
+- API: `http://localhost:5000`
+- Docs: `http://localhost:5000/docs`
+- Demo: `http://localhost:5000/demo`
 
 ## Endpoints
 
@@ -92,10 +92,11 @@ Constraints:
 
 Example:
 
-```bash
-curl -X POST "http://localhost:8000/analyze?ml=true" ^
-  -H "Content-Type: application/json" ^
-  -d "{\"text\":\"Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious.\"}"
+```Powershell
+
+Invoke-RestMethod -Method Post -Uri "http://localhost:5000/analyze?ml=false" -ContentType "application/json" -Body (@{ text = "Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious." } | ConvertTo-Json -Compress)
+
+
 ```
 
 Example response:
@@ -147,7 +148,7 @@ Example response:
   },
   "engagement_bait_score": null,
   "meta": {
-    "ml_requested": true,
+    "ml_requested": false,
     "ml_used": false,
     "openai_available": false,
     "vector_backend": "none"
