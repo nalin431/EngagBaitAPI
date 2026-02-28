@@ -82,13 +82,13 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     summary="Analyze one text",
     description=(
         "Score one text for structural engagement-bait patterns. "
-        "Use the ml query parameter to opt into or out of semantic scoring."
+        "Use the embeddings query parameter to opt into or out of semantic scoring."
     ),
 )
-async def analyze(request: AnalyzeRequest, ml: bool | None = None):
+async def analyze(request: AnalyzeRequest, embeddings: bool | None = None):
     from app.analyzers import analyze_text
 
-    return analyze_text(request.text, ml=ml)
+    return analyze_text(request.text, ml=embeddings)
 
 
 @app.post(
@@ -97,12 +97,12 @@ async def analyze(request: AnalyzeRequest, ml: bool | None = None):
     summary="Analyze multiple texts",
     description="Analyze up to 10 texts in one request and preserve the submitted order.",
 )
-async def analyze_batch(request: BatchAnalyzeRequest, ml: bool | None = None):
+async def analyze_batch(request: BatchAnalyzeRequest, embeddings: bool | None = None):
     from app.analyzers import analyze_text
 
     return BatchAnalyzeResponse(
         items=[
-            BatchAnalyzeResult(id=item.id, result=analyze_text(item.text, ml=ml))
+            BatchAnalyzeResult(id=item.id, result=analyze_text(item.text, ml=embeddings))
             for item in request.items
         ]
     )

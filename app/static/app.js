@@ -12,11 +12,12 @@ const metricLabels = {
   arousal_intensity: "Arousal Intensity",
   counterargument_absence: "Counterargument Absence",
   claim_volume_vs_depth: "Claim Volume vs Depth",
+  lexical_diversity: "Lexical Diversity",
   engagement_bait_score: "Engagement Bait Score",
 };
 
 const textInput = document.querySelector("#text-input");
-const mlToggle = document.querySelector("#ml-toggle");
+const embeddingsToggle = document.querySelector("#embeddings-toggle");
 const analyzeButton = document.querySelector("#analyze-button");
 const errorMessage = document.querySelector("#error-message");
 const resultsGrid = document.querySelector("#results-grid");
@@ -36,7 +37,7 @@ analyzeButton.addEventListener("click", async () => {
   analyzeButton.textContent = "Analyzing...";
 
   try {
-    const response = await fetch(`/analyze?ml=${mlToggle.checked}`, {
+    const response = await fetch(`/analyze?embeddings=${embeddingsToggle.checked}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: textInput.value }),
@@ -69,6 +70,7 @@ function renderResults(data) {
     "arousal_intensity",
     "counterargument_absence",
     "claim_volume_vs_depth",
+    "lexical_diversity",
   ];
 
   for (const key of metrics) {
@@ -80,8 +82,8 @@ function renderResults(data) {
 
   const meta = data.meta;
   metaSummary.textContent =
-    `ML requested: ${meta.ml_requested}. ` +
-    `ML used: ${meta.ml_used}. ` +
+    `Embeddings requested: ${meta.embeddings_requested}. ` +
+    `Embeddings used: ${meta.embeddings_used}. ` +
     `OpenAI available: ${meta.openai_available}. ` +
     `Vector backend: ${meta.vector_backend}.`;
 }
@@ -111,7 +113,7 @@ function scoreOnlyCard(title, score) {
     <article class="result-card">
       <h3>${title}</h3>
       <div class="score-pill">${value}</div>
-      <p class="meta-summary">Semantic similarity score from the optional ML layer.</p>
+      <p class="meta-summary">Semantic similarity score from the optional embeddings layer.</p>
     </article>
   `;
 }

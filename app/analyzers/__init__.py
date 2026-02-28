@@ -10,14 +10,15 @@ def analyze_text(text: str, ml: bool | None = None) -> AnalyzeResponse:
     from app.analyzers.narrative import analyze_counterargument_absence
     from app.analyzers.evidence import analyze_evidence
     from app.analyzers.urgency import analyze_urgency
+    from app.analyzers.lexical_diversity import analyze_lexical_diversity
 
     openai_available = bool(os.environ.get("OPENAI_API_KEY", "").strip().startswith("sk-"))
-    ml_requested = ml if ml is not None else openai_available
-    ml_used = ml_requested and openai_available
+    embeddings_requested = ml if ml is not None else openai_available
+    embeddings_used = embeddings_requested and openai_available
 
     engagement_bait_score = None
     vector_backend = "none"
-    if ml_used:
+    if embeddings_used:
         from app.ml.scorer import compute_engagement_bait_result
 
         engagement_bait_score, vector_backend = compute_engagement_bait_result(text)
@@ -28,10 +29,11 @@ def analyze_text(text: str, ml: bool | None = None) -> AnalyzeResponse:
         arousal_intensity=analyze_arousal(text),
         counterargument_absence=analyze_counterargument_absence(text),
         claim_volume_vs_depth=analyze_claim_volume(text),
+        lexical_diversity=analyze_lexical_diversity(text),
         engagement_bait_score=engagement_bait_score,
         meta=AnalyzeMeta(
-            ml_requested=ml_requested,
-            ml_used=ml_used,
+            embeddings_requested=embeddings_requested,
+            embeddings_used=embeddings_used,
             openai_available=openai_available,
             vector_backend=vector_backend,
         ),

@@ -54,7 +54,7 @@ def main() -> int:
     _require_openai_key()
     benchmark = _load_benchmark()
 
-    print("Engagement Bait API ML Benchmark")
+    print("Engagement Bait API Embeddings Benchmark")
     print(f"Examples: {len(benchmark)}")
     print("-" * 72)
 
@@ -62,15 +62,15 @@ def main() -> int:
         result = analyze_text(item["text"], ml=True)
         print(f"{item['id']} [{item['label']}]")
         print(
-            f"Expected: ml={item['expected_ml_behavior']} | "
+            f"Expected: embeddings={item['expected_ml_behavior']} | "
             f"heuristics={item['expected_heuristic_behavior']}"
         )
-        print(f"ML score: {result.engagement_bait_score}")
+        print(f"Embeddings score: {result.engagement_bait_score}")
         print(f"Heuristics: {_score_summary(result)}")
         print(
             "Meta: "
-            f"ml_requested={result.meta.ml_requested}, "
-            f"ml_used={result.meta.ml_used}, "
+            f"embeddings_requested={result.meta.embeddings_requested}, "
+            f"embeddings_used={result.meta.embeddings_used}, "
             f"openai_available={result.meta.openai_available}, "
             f"vector_backend={result.meta.vector_backend}"
         )

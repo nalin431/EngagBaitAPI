@@ -1,5 +1,5 @@
 from app.models import MetricBreakdown
-from app.analyzers.base import count_to_score, clamp_score
+from app.analyzers.base import count_to_score, clamp_score, is_phrase_negated
 from app.lexicons.loader import get_urgency_sections
 
 _DEFAULT_TIME = frozenset({
@@ -30,8 +30,16 @@ def _get_urgency_sets() -> tuple[frozenset[str], frozenset[str], frozenset[str]]
 
 
 def _count_phrases(text: str, phrases: set[str]) -> int:
+    # count each phrase occurrence, skipping hits where a negation word precedes it
     t = text.lower()
-    return sum(1 for p in phrases if p in t)
+    count = 0
+    for p in phrases:
+        idx = t.find(p)
+        while idx != -1:
+            if not is_phrase_negated(t, idx):
+                count += 1
+            idx = t.find(p, idx + len(p))
+    return count
 
 
 def analyze_urgency(text: str) -> MetricBreakdown:
