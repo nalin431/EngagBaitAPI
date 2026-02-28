@@ -7,6 +7,7 @@ last chance
 don't miss
 expires soon
 before it's too late
+before it disappears
 while supplies last
 urgency
 urgent
@@ -19,6 +20,11 @@ countdown
 deadline
 now or never
 must act
+while you still can
+do not wait
+don't wait
+act immediately
+share this now
 
 # Scarcity
 limited
@@ -44,3 +50,9 @@ act before everyone else
 limited availability
 going fast
 running out
+share this
+before it disappears
+before they take it down
+before it gets deleted
+everyone knows
+people are waking up

@@ -1,42 +1,122 @@
 [
-  {"text": "URGENT: You won't believe what happens next! This secret trick will change everything. Don't scroll past!", "label": "bait"},
-  {"text": "SHOCKING: They don't want you to know this. Share before it gets deleted!", "label": "bait"},
-  {"text": "Everyone is talking about this. You're missing out if you don't act NOW!", "label": "bait"},
-  {"text": "BREAKING: The truth they're hiding. You NEED to see this before it's too late.", "label": "bait"},
-  {"text": "This ONE thing will fix everything. Scientists HATE it!", "label": "bait"},
-  {"text": "Your life will NEVER be the same after reading this. 99% don't know!", "label": "bait"},
-  {"text": "I can't believe this is legal. Share with everyone you love!", "label": "bait"},
-  {"text": "The elites don't want you to see this. Wake up!", "label": "bait"},
-  {"text": "Just wait until you see what happens at the end. Mind = BLOWN!", "label": "bait"},
-  {"text": "This changes EVERYTHING. Trust me, you won't regret it.", "label": "bait"},
-  {"text": "Why is NOBODY talking about this?! Spread the word!", "label": "bait"},
-  {"text": "The SIMPLE truth that will shock you. Click to find out!", "label": "bait"},
-  {"text": "You've been LIED to. Here's the real story they're suppressing.", "label": "bait"},
-  {"text": "Unbelievable! This one trick solves all your problems.", "label": "bait"},
-  {"text": "Last chance! This offer expires in 24 hours. Don't miss out!", "label": "bait"},
-  {"text": "They are evil and we must fight. The choice is simple: us or them.", "label": "bait"},
-  {"text": "Everyone knows they're wrong. We will never give up. Join us!", "label": "bait"},
-  {"text": "The truth is obvious. No need for evidence. Trust your gut.", "label": "bait"},
-  {"text": "Either you're with us or against us. There is no middle ground.", "label": "bait"},
-  {"text": "This will DEFINITELY work. Guaranteed. No questions asked.", "label": "bait"},
-  {"text": "A new study published in Nature (2024) examines the correlation between sleep patterns and cognitive performance. Researchers analyzed data from 2,000 participants over 6 months.", "label": "neutral"},
-  {"text": "According to the Bureau of Labor Statistics, unemployment fell to 3.7% in January. The report notes seasonal adjustments and provides historical comparison data.", "label": "neutral"},
-  {"text": "The FDA announced approval of a new treatment after Phase 3 trials showed statistically significant improvement. Side effects are documented in the product label.", "label": "neutral"},
-  {"text": "A meta-analysis of 47 studies suggests moderate exercise may reduce cardiovascular risk. Confidence intervals and methodological limitations are discussed in the paper.", "label": "neutral"},
-  {"text": "The committee's report, available at gov/report-2024, outlines three policy options with pros and cons for each approach.", "label": "neutral"},
-  {"text": "Researchers at MIT found that the technique could improve efficiency by approximately 15% under lab conditions. Replication in real-world settings remains to be tested.", "label": "neutral"},
-  {"text": "The survey of 1,200 respondents found 62% support, with a margin of error of ±3%. Demographics and methodology are detailed in the appendix.", "label": "neutral"},
-  {"text": "The draft legislation proposes changes in three areas. Section 4 addresses enforcement; stakeholders may submit comments by March 15.", "label": "neutral"},
-  {"text": "Preliminary results indicate a possible association, though the authors caution that causation cannot be inferred. Further research is needed.", "label": "neutral"},
-  {"text": "The quarterly earnings report shows revenue of $5.2B, up 4% year-over-year. The company provided guidance for the next quarter.", "label": "neutral"},
-  {"text": "The policy change takes effect in April. The FAQ document explains eligibility criteria and application procedures.", "label": "neutral"},
-  {"text": "According to the IPCC's latest assessment, global temperatures have risen 1.1°C above pre-industrial levels. The report cites multiple lines of evidence.", "label": "neutral"},
-  {"text": "The workshop summary describes three approaches discussed by participants. No consensus was reached; recommendations are tentative.", "label": "neutral"},
-  {"text": "The audit found compliance in 94% of sampled cases. The report lists exceptions and recommends follow-up for the remaining 6%.", "label": "neutral"},
-  {"text": "Evidence from randomized controlled trials suggests the intervention may be effective. However, heterogeneity across studies limits generalizability.", "label": "neutral"},
-  {"text": "The regulation defines key terms in Section 2 and specifies requirements in Sections 3–7. Public comments are summarized in an addendum.", "label": "neutral"},
-  {"text": "The study used a double-blind design with 500 participants. Results were peer-reviewed and published in a medical journal.", "label": "neutral"},
-  {"text": "The board reviewed the proposal and voted 5–2 to approve, with two members citing concerns about the timeline.", "label": "neutral"},
-  {"text": "Historical data from 2010–2024 shows a gradual trend. The analysis notes several confounding factors that could affect interpretation.", "label": "neutral"},
-  {"text": "The guidelines recommend screening for adults aged 45–75, with the strength of recommendation varying by risk level. References are provided.", "label": "neutral"}
+  {
+    "text": "Act now before this disappears. They are counting on people staying quiet, and if you wait until tomorrow it will be too late to stop them.",
+    "label": "bait"
+  },
+  {
+    "text": "Everyone you know is waking up to this, and you will regret ignoring it once the damage is done.",
+    "label": "bait"
+  },
+  {
+    "text": "This changes everything. The answer is obvious, the experts are lying, and there is no excuse for staying neutral anymore.",
+    "label": "bait"
+  },
+  {
+    "text": "The media will not tell you this simple truth because panic keeps people obedient. Share this while you still can.",
+    "label": "bait"
+  },
+  {
+    "text": "They want you confused, but the real story is clear: one decision caused the entire collapse and now ordinary people will pay for it.",
+    "label": "bait"
+  },
+  {
+    "text": "You do not need another study to see what is happening. Trust your gut, act immediately, and do not let them bury the truth.",
+    "label": "bait"
+  },
+  {
+    "text": "This one overlooked loophole can protect your savings overnight. Banks hope you never learn it, so read this before they close it.",
+    "label": "bait"
+  },
+  {
+    "text": "Parents are furious after officials quietly changed the rules. If you care about your family, you need to spread this now.",
+    "label": "bait"
+  },
+  {
+    "text": "There is no middle ground left. Either people fight back now or they accept permanent failure.",
+    "label": "bait"
+  },
+  {
+    "text": "The truth is obvious. No evidence is needed when the pattern is right in front of you and everyone can see it.",
+    "label": "bait"
+  },
+  {
+    "text": "This soft new policy sounds reasonable, but it is the first step in a broader plan to control what people can say and do. Do not wait to push back.",
+    "label": "bait"
+  },
+  {
+    "text": "A calm voice can still hide manipulation. This memo frames one group as the cause of every problem and urges readers to act before it disappears from public view.",
+    "label": "bait"
+  },
+  {
+    "text": "The report claims to explain everything in plain terms, yet it offers no sourcing and insists the only responsible choice is immediate action.",
+    "label": "bait"
+  },
+  {
+    "text": "People keep pretending the issue is complicated, but it is really simple. One side is wrong, the danger is growing, and delay only helps the bad actors.",
+    "label": "bait"
+  },
+  {
+    "text": "If this offer vanishes tonight, do not say nobody warned you. Smart people are already moving, and late adopters will be stuck with the consequences.",
+    "label": "bait"
+  },
+  {
+    "text": "Researchers at Stanford analyzed 1,800 patient records and found a moderate association between sleep duration and recovery time, although the authors note that causation remains uncertain.",
+    "label": "neutral"
+  },
+  {
+    "text": "According to the city budget office, the transit proposal would increase operating costs by 6 percent in the first year, but projected wait times could fall if hiring targets are met.",
+    "label": "neutral"
+  },
+  {
+    "text": "The engineering note documents three implementation options, including their tradeoffs in latency, memory usage, and maintenance complexity.",
+    "label": "neutral"
+  },
+  {
+    "text": "A new review in Nature Biotechnology summarizes recent gene-editing trials, outlines safety limitations, and explains why larger follow-up studies are still needed.",
+    "label": "neutral"
+  },
+  {
+    "text": "The agency bulletin states that the rule change takes effect on April 15 and applies only to applicants who meet the updated eligibility criteria.",
+    "label": "neutral"
+  },
+  {
+    "text": "An internal memo compared two procurement strategies and concluded that either could work, depending on supplier reliability and long-term contract costs.",
+    "label": "neutral"
+  },
+  {
+    "text": "The committee report presents survey data from 2,400 respondents, describes the sampling method, and notes several sources of uncertainty in the findings.",
+    "label": "neutral"
+  },
+  {
+    "text": "The earnings release shows revenue growth of 4.2 percent year over year, while the accompanying letter warns that currency fluctuations may affect next quarter's outlook.",
+    "label": "neutral"
+  },
+  {
+    "text": "Public health guidance recommends the treatment for high-risk patients, although clinicians are advised to consider drug interactions and local resource constraints.",
+    "label": "neutral"
+  },
+  {
+    "text": "The white paper explains the system architecture in detail, including failure modes, fallback behavior, and the situations in which manual review is still required.",
+    "label": "neutral"
+  },
+  {
+    "text": "Analysts described the proposed merger as potentially beneficial in some markets, but emphasized that consumer impact depends on regulatory conditions and pricing behavior.",
+    "label": "neutral"
+  },
+  {
+    "text": "The study used a randomized design with 620 participants and reports statistically significant improvement, though the authors caution that the effect size was modest.",
+    "label": "neutral"
+  },
+  {
+    "text": "A policy explainer from the legislature outlines the expected benefits of the bill, the main criticisms raised in committee, and the amendments added in response.",
+    "label": "neutral"
+  },
+  {
+    "text": "Documentation for the API specifies request limits, retry guidance, and the cases where clients should expect partial results instead of immediate completion.",
+    "label": "neutral"
+  },
+  {
+    "text": "The article argues in favor of expanded childcare funding, but it also acknowledges implementation costs, staffing constraints, and uncertainty about long-term uptake.",
+    "label": "neutral"
+  }
 ]

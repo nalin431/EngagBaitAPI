@@ -1,7 +1,7 @@
 from app.analyzers.urgency import analyze_urgency
 from app.analyzers.evidence import analyze_evidence
 from app.analyzers.arousal import analyze_arousal
-from app.analyzers.narrative import analyze_narrative
+from app.analyzers.narrative import analyze_counterargument_absence
 from app.analyzers.claim_volume import analyze_claim_volume
 
 
@@ -30,10 +30,18 @@ def test_arousal_high():
     assert r.score >= 0.25
 
 
-def test_narrative_simple():
-    t = "The root cause is clear. Either you support us or you are against us. No trade-offs."
-    r = analyze_narrative(t)
-    assert r.score >= 0.4
+def test_counterargument_absence_high():
+    t = "This is the only path forward. The answer is obvious. We should do it now."
+    r = analyze_counterargument_absence(t)
+    assert r.score >= 0.7
+    assert "tradeoff_absence" in r.breakdown
+    assert "conditional_absence" in r.breakdown
+
+
+def test_counterargument_absence_low():
+    t = "This approach may help in some cases, although the tradeoffs depend on cost, staffing, and whether implementation succeeds locally."
+    r = analyze_counterargument_absence(t)
+    assert r.score <= 0.5
 
 
 def test_claim_volume():

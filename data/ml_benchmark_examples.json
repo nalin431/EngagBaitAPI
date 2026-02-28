@@ -1,0 +1,66 @@
+[
+  {
+    "id": "bait-01",
+    "label": "bait",
+    "text": "Act now before they scrub this from public view. Everyone can see what is happening, and if you do not share it tonight the truth will be buried again.",
+    "expected_ml_behavior": "high",
+    "expected_heuristic_behavior": "high",
+    "notes": "Clear urgency and suppression framing. Both heuristics and ML should read this as strongly bait-like."
+  },
+  {
+    "id": "bait-02",
+    "label": "bait",
+    "text": "This sounds polite on the surface, but it blames one group for everything, dismisses evidence, and insists the only moral choice is immediate action.",
+    "expected_ml_behavior": "high",
+    "expected_heuristic_behavior": "medium",
+    "notes": "Designed to show ML adding value on softer manipulative prose that is less clickbait-styled."
+  },
+  {
+    "id": "bait-03",
+    "label": "bait",
+    "text": "If you wait for official confirmation, you have already lost. Smart people know the answer is obvious and that delay only helps the people causing the problem.",
+    "expected_ml_behavior": "high",
+    "expected_heuristic_behavior": "high",
+    "notes": "Low evidence and absolutist rhetoric should score strongly across both systems."
+  },
+  {
+    "id": "neutral-01",
+    "label": "neutral",
+    "text": "A review of 38 climate adaptation studies found modest benefits for coastal planning, although authors noted significant variation in methodology and regional constraints.",
+    "expected_ml_behavior": "low",
+    "expected_heuristic_behavior": "low",
+    "notes": "Scientific summary with evidence, caveats, and conditions."
+  },
+  {
+    "id": "neutral-02",
+    "label": "neutral",
+    "text": "The memo recommends a phased rollout of the service because the lower-cost option has slower onboarding, while the faster option may require additional staffing.",
+    "expected_ml_behavior": "low",
+    "expected_heuristic_behavior": "low",
+    "notes": "Tradeoff-heavy operational writing should remain clearly non-bait."
+  },
+  {
+    "id": "neutral-03",
+    "label": "neutral",
+    "text": "According to the report, injuries fell by 12 percent after the redesign, but the authors caution that traffic patterns and enforcement changes may also have influenced the results.",
+    "expected_ml_behavior": "low",
+    "expected_heuristic_behavior": "low",
+    "notes": "Evidence-backed explanatory writing with uncertainty."
+  },
+  {
+    "id": "mixed-01",
+    "label": "mixed",
+    "text": "Supporters say the policy could protect consumers quickly, but critics argue the timeline is unrealistic and the data supporting the proposal is still incomplete.",
+    "expected_ml_behavior": "medium",
+    "expected_heuristic_behavior": "low",
+    "notes": "Ambiguous persuasive text with real counterarguments. Disagreement is acceptable."
+  },
+  {
+    "id": "mixed-02",
+    "label": "mixed",
+    "text": "The article opens with dramatic language about a looming crisis, then shifts into a sourced discussion of costs, risks, and several possible responses.",
+    "expected_ml_behavior": "medium",
+    "expected_heuristic_behavior": "medium",
+    "notes": "Mixed signals should not look wildly implausible in either direction."
+  }
+]

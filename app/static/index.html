@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engagement Bait API Demo</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">HackIllinois Demo</p>
+      <h1>Detect structural engagement bait patterns in text.</h1>
+      <p class="subcopy">
+        Scores urgency, evidence density, arousal, counterargument absence,
+        claim volume vs depth, and optional semantic similarity.
+      </p>
+    </section>
+
+    <section class="panel controls">
+      <label class="field">
+        <span>Text to analyze</span>
+        <textarea id="text-input" rows="10" placeholder="Paste text here..."></textarea>
+      </label>
+
+      <div class="toolbar">
+        <label class="checkbox">
+          <input id="ml-toggle" type="checkbox" checked>
+          <span>Use ML</span>
+        </label>
+        <button id="analyze-button" type="button">Analyze</button>
+      </div>
+
+      <div class="samples">
+        <span>Try a sample:</span>
+        <button class="sample-button" data-sample="high" type="button">High Bait</button>
+        <button class="sample-button" data-sample="neutral" type="button">Neutral</button>
+        <button class="sample-button" data-sample="mixed" type="button">Mixed</button>
+      </div>
+
+      <p id="error-message" class="error" hidden></p>
+    </section>
+
+    <section class="panel">
+      <div class="section-header">
+        <h2>Results</h2>
+        <p id="meta-summary" class="meta-summary">Run an analysis to see metric details.</p>
+      </div>
+      <div id="results-grid" class="results-grid"></div>
+    </section>
+
+    <section class="panel">
+      <details>
+        <summary>Raw JSON response</summary>
+        <pre id="raw-json">No response yet.</pre>
+      </details>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

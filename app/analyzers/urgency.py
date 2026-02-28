@@ -44,7 +44,8 @@ def analyze_urgency(text: str) -> MetricBreakdown:
     s_time = count_to_score(time_pressure, (1, 4))
     s_scarcity = count_to_score(scarcity, (1, 4))
     s_fomo = count_to_score(fomo, (1, 4))
-    score = clamp_score((s_time + s_scarcity + s_fomo) / 3)
+    avg_score = (s_time + s_scarcity + s_fomo) / 3
+    score = clamp_score((0.7 * avg_score) + (0.3 * max(s_time, s_scarcity, s_fomo)))
     return MetricBreakdown(
         score=round(score, 2),
         breakdown={"time_pressure": round(s_time, 2), "scarcity": round(s_scarcity, 2), "fomo": round(s_fomo, 2)},

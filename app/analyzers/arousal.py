@@ -32,12 +32,12 @@ def analyze_arousal(text: str) -> MetricBreakdown:
     superlative_count = sum(1 for w in words if w.rstrip(".,;:!?") in _SUPERLATIVES)
     curiosity_count = _count_phrases(t, _CURIOSITY_GAP) if _CURIOSITY_GAP else 0
 
-    s_emotion = count_to_score(emotion_count, (2, 8))
+    s_emotion = count_to_score(emotion_count, (0, 6))
     s_exclamation = clamp_score(min(1, exclamation_density * 20))
     s_question = clamp_score(min(1, question_density * 20))
     s_caps = clamp_score(min(1, caps_ratio * 15))
-    s_moralized = count_to_score(moralized_count, (1, 5))
-    s_superlative = count_to_score(superlative_count, (2, 6))
+    s_moralized = count_to_score(moralized_count, (0, 4))
+    s_superlative = count_to_score(superlative_count, (0, 5))
     s_curiosity = count_to_score(curiosity_count, (0, 2))  # 1 phrase = 0.5, 2+ = 1
 
     score = (s_emotion + s_exclamation + s_question + s_caps + s_moralized + s_superlative + s_curiosity) / 7

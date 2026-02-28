@@ -1,128 +1,244 @@
 # Engagement Bait API
 
-Detect structural manipulation in text: urgency pressure, evidence density, arousal intensity, narrative simplification, and claim volume vs depth. Built for HackIllinois 2026 (Stripe Track).
+Analyze structural engagement-bait patterns in text. The API scores urgency pressure, low evidence signal, arousal intensity, counterargument absence, claim volume vs depth, and an optional OpenAI-powered semantic similarity signal.
+
+This project is built for HackIllinois 2026 with a primary focus on API quality and developer experience.
+
+## What It Does
+
+- Detects structural manipulation patterns in text
+- Returns transparent heuristic breakdowns for each metric
+- Optionally adds `engagement_bait_score` using OpenAI embeddings
+- Includes a lightweight browser demo for quick judging and testing
+- Treats the `evidence_density` field as an inverted signal, where higher means less evidence
+
+## What It Does Not Do
+
+- Fact check claims
+- Classify political ideology
+- Detect truthfulness
+- Perform content moderation
 
 ## Tech Stack
 
-- **FastAPI** – HTTP API, auto OpenAPI docs
-- **Python 3.10+**
-- **Pydantic** – request/response validation
-- **OpenAI** – embeddings for ML layer (`engagement_bait_score`)
-- **Actian VectorAI DB** – vector search (Phase 2b; SDK coming soon)
+- FastAPI
+- Python 3.10+
+- Pydantic
+- OpenAI embeddings via `text-embedding-3-small`
 
 ## Quick Start
 
 ```bash
-# Create venv (optional)
 python -m venv venv
-venv\Scripts\activate   # Windows
-# source venv/bin/activate  # Linux/macOS
-
-# Install
+venv\Scripts\activate
 pip install -r requirements.txt
-
-# Optional: set OPENAI_API_KEY for ML layer (engagement_bait_score)
-# cp .env.example .env && edit .env
-
-# Run
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-API: http://localhost:8000  
-Docs: http://localhost:8000/docs
+Optional:
+
+```bash
+set OPENAI_API_KEY=your_key_here
+```
+
+Local URLs:
+
+- API: `http://localhost:8000`
+- Docs: `http://localhost:8000/docs`
+- Demo: `http://localhost:8000/demo`
 
 ## Endpoints
 
 | Method | Path | Description |
-|--------|------|-------------|
-| GET | `/` | API overview + link to docs |
-| GET | `/health` | Liveness check |
-| POST | `/analyze` | Analyze text for engagement bait metrics |
+|---|---|---|
+| GET | `/` | API overview and key links |
+| GET | `/health` | Health status and integration flags |
+| GET | `/demo` | Lightweight browser demo |
+| POST | `/analyze` | Analyze one text |
+| POST | `/analyze/batch` | Analyze up to 10 texts |
 
-## Analyze Request
+## Analyze One Text
 
-**POST /analyze**
+`POST /analyze`
 
-- **Content-Type:** `application/json`
-- **Body:** `{ "text": "Your text to analyze..." }`
-- **Constraints:** `text` length 50–50,000 characters
-- **Query param:** `?ml=true|false` – enable/disable ML layer (default: true when `OPENAI_API_KEY` set)
-
-## Example: cURL
-
-```bash
-curl -X POST http://localhost:8000/analyze -H "Content-Type: application/json" -d "{\"text\": \"You must act now! This is the last chance. Everyone knows they are evil and we must fight back. The truth is simple: they are always wrong and we will never give up. Don't miss out!\"}"
-```
-
-## Example: Postman
-
-1. New Request → POST
-2. URL: `http://localhost:8000/analyze`
-3. Headers: `Content-Type: application/json`
-4. Body (raw JSON):
+Request body:
 
 ```json
 {
-  "text": "You must act now! This is the last chance. Everyone knows they are evil and we must fight back. The truth is simple: they are always wrong and we will never give up. Don't miss out!"
+  "text": "Your text to analyze..."
 }
 ```
 
-## Response Schema
+Query param:
 
-All scores are 0–1; higher = more engagement-bait-like.
+- `ml=true|false`
+- If omitted, ML defaults to on only when `OPENAI_API_KEY` is available
+
+Constraints:
+
+- text length: 50 to 50,000 characters
+
+Example:
+
+```bash
+curl -X POST "http://localhost:8000/analyze?ml=true" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"text\":\"Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious.\"}"
+```
+
+Example response:
 
 ```json
 {
-  "urgency_pressure": { "score": 0.72, "breakdown": { "time_pressure": 0.8, "scarcity": 0.6, "fomo": 0.75 } },
-  "evidence_density": { "score": 0.15, "breakdown": { "citations": 0, "stats": 0.2, "external_sources": 0.1 } },
-  "arousal_intensity": { "score": 0.7, "breakdown": { "emotion_words": 0.75, "exclamation_density": 0.6, "question_density": 0.2, "caps_ratio": 0.1, "moralized_language": 0.8, "superlative_density": 0.5, "curiosity_gap": 0.3 } },
-  "narrative_simplification": { "score": 0.8, "breakdown": { "binary_connectors": 0.85, "single_cause": 0.9, "tradeoff_absence": 0.7, "conditional_absence": 0.75 } },
-  "claim_volume_vs_depth": { "score": 0.6, "breakdown": { "claims_per_word": 0.65, "explanation_depth": 0.55, "listicle": 0.2 } },
-  "engagement_bait_score": 0.78
+  "urgency_pressure": {
+    "score": 0.67,
+    "breakdown": {
+      "time_pressure": 1.0,
+      "scarcity": 0.0,
+      "fomo": 1.0
+    }
+  },
+  "evidence_density": {
+    "score": 1.0,
+    "breakdown": {
+      "citations": 1.0,
+      "stats": 1.0,
+      "external_sources": 1.0
+    }
+  },
+  "arousal_intensity": {
+    "score": 0.46,
+    "breakdown": {
+      "emotion_words": 0.33,
+      "exclamation_density": 0.0,
+      "question_density": 0.0,
+      "caps_ratio": 0.0,
+      "moralized_language": 0.25,
+      "superlative_density": 0.0,
+      "curiosity_gap": 0.0
+    }
+  },
+  "counterargument_absence": {
+    "score": 0.63,
+    "breakdown": {
+      "tradeoff_absence": 1.0,
+      "conditional_absence": 0.25
+    }
+  },
+  "claim_volume_vs_depth": {
+    "score": 0.6,
+    "breakdown": {
+      "claims_per_word": 0.64,
+      "explanation_depth": 0.19,
+      "listicle": 0.0
+    }
+  },
+  "engagement_bait_score": null,
+  "meta": {
+    "ml_requested": true,
+    "ml_used": false,
+    "openai_available": false,
+    "vector_backend": "none"
+  }
 }
 ```
 
-`engagement_bait_score` (0–1) is an ML-based score from OpenAI embeddings; it is `null` when `OPENAI_API_KEY` is not set.
+Note: `evidence_density` is an inverted bait signal. Higher values mean the text includes less evidence, not more.
 
-## Metrics
+`counterargument_absence` is also bait-oriented: higher values mean the text does less to acknowledge tradeoffs, conditions, or competing considerations.
 
-| Metric | Sub-metrics | Description |
-|--------|-------------|-------------|
-| **Urgency Pressure** | time_pressure, scarcity, fomo | Time pressure, scarcity, FOMO phrases |
-| **Evidence Density** | citations, stats, external_sources | Inverted: low evidence → high score |
-| **Arousal Intensity** | emotion_words, exclamation_density, question_density, caps_ratio, moralized_language, superlative_density, curiosity_gap | High-arousal emotions, exclamations, questions, caps, moralized terms, superlatives, curiosity-gap phrases |
-| **Narrative Simplification** | binary_connectors, single_cause, tradeoff_absence, conditional_absence | Either/or, single cause, no trade-offs |
-| **Claim Volume vs Depth** | claims_per_word, explanation_depth, listicle | Many strong claims, shallow explanation, listicle patterns |
-| **Engagement Bait (ML)** | — | Semantic similarity to bait vs neutral examples (OpenAI embeddings) |
+## Analyze In Batch
 
-## Environment Variables
+`POST /analyze/batch`
 
-| Variable | Purpose |
-|----------|---------|
-| `OPENAI_API_KEY` | Required for `engagement_bait_score` (embeddings) |
-| `USE_ACTIAN` | Optional; if true, use Actian VectorAI DB for k-NN when available |
-| `ACTIAN_*` | Actian VectorAI DB connection (per Actian docs; SDK coming soon) |
+Request body:
 
-## Actian VectorAI DB (Phase 2b)
-
-When Actian VectorAI DB SDK is released: set `USE_ACTIAN=true` and `ACTIAN_*` vars, then run:
-
-```bash
-python -m scripts.seed_actian
+```json
+{
+  "items": [
+    { "id": "high", "text": "First text..." },
+    { "id": "neutral", "text": "Second text..." }
+  ]
+}
 ```
 
-Until then, the ML layer uses in-memory centroid scoring (Phase 2a).
+Rules:
 
-## Prize Eligibility
+- at least 1 item
+- at most 10 items
+- each item must satisfy the same text length validation as `/analyze`
 
-- **Best Use of OpenAI API** – OpenAI embeddings for semantic similarity
-- **Best Use of Actian VectorAI DB** – Vector search integration (when SDK available)
+The response preserves the order of the submitted items and includes each caller-supplied `id`.
+
+## Response Meta
+
+Each analysis response now includes:
+
+```json
+"meta": {
+  "ml_requested": true,
+  "ml_used": false,
+  "openai_available": false,
+  "vector_backend": "none"
+}
+```
+
+Field meanings:
+
+- `ml_requested`: whether the request asked for ML
+- `ml_used`: whether the ML path actually ran
+- `openai_available`: whether the server has a valid OpenAI key configured
+- `vector_backend`: `none`, `centroid`, or `actian`
+
+For the current submission, `vector_backend` will normally be:
+
+- `none` when ML is off or unavailable
+- `centroid` when OpenAI embeddings are used
+
+## Browser Demo
+
+The demo lives at `GET /demo`.
+
+It includes:
+
+- paste-in text analysis
+- a `Use ML` toggle
+- sample inputs for high bait, neutral, and mixed text
+- score cards for all metrics
+- raw JSON output for developer inspection
 
 ## Error Responses
 
-- **422 Unprocessable Entity** – Invalid input (e.g., text too short/long)
-- **500 Internal Server Error** – Server error
+Common validation errors:
 
-## License
+- text too short
+- text too long
+- empty batch
+- batch larger than 10 items
 
-MIT
+All validation errors return HTTP `422`.
+
+## Testing
+
+Run:
+
+```bash
+python -m pytest -q
+```
+
+## OpenAI Notes
+
+The OpenAI portion of the project is intentionally narrow:
+
+- embeddings power `engagement_bait_score`
+- heuristic metrics remain the explainable layer
+- if OpenAI is unavailable, the API still returns all heuristic results cleanly
+
+## Project Status
+
+This submission is optimized for:
+
+- Stripe Track
+- Best Use of OpenAI API
+
+Actian Vector support remains future-facing and is not treated as a shipped dependency for the current submission.

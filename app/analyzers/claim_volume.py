@@ -3,7 +3,7 @@ from app.models import MetricBreakdown
 from app.analyzers.base import clamp_score
 
 _CLAIM_INDICATORS = re.compile(
-    r"\b(?:proves?|shows?|means?|causes?|reveals?|confirms?|always|never|must|should)\b",
+    r"\b(?:proves?|shows?|means?|causes?|reveals?|confirms?|always|never|must|should|obvious|truth|lying|everyone\s+knows|no\s+middle\s+ground)\b",
     re.I,
 )
 _LISTICLE_PATTERNS = [

@@ -1,7 +1,6 @@
 """ML scorer: engagement_bait_score from seed embeddings."""
 
 import json
-import os
 from pathlib import Path
 
 from app.ml.embeddings import get_embedding
@@ -81,24 +80,28 @@ def _score_from_centroids(emb: list[float]) -> float:
     return max(0.0, min(1.0, score))
 
 
-def compute_engagement_bait_score(text: str) -> float | None:
+def compute_engagement_bait_result(text: str) -> tuple[float | None, str]:
     """
-    Compute engagement_bait_score (0–1).
+    Compute engagement_bait_score (0-1) and report which backend produced it.
     When USE_ACTIAN=true and Actian available: k-NN from vector store.
     Else: centroid similarity (Phase 2a). Returns None if OpenAI unavailable.
     """
     emb = get_embedding(text)
     if emb is None:
-        return None
+        return None, "none"
 
-    # Phase 2b: Actian VectorAI DB k-NN when available
     from app.ml.vector_store import search_similar
+
     neighbors = search_similar(emb, k=5)
     if neighbors:
         bait_count = sum(1 for n in neighbors if n.get("label") == "bait")
-        return bait_count / len(neighbors)
+        return bait_count / len(neighbors), "actian"
 
-    # Phase 2a: in-memory centroids
     if not _ensure_centroids():
-        return None
-    return _score_from_centroids(emb)
+        return None, "none"
+    return _score_from_centroids(emb), "centroid"
+
+
+def compute_engagement_bait_score(text: str) -> float | None:
+    score, _backend = compute_engagement_bait_result(text)
+    return score
