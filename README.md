@@ -24,6 +24,13 @@ This project is currently optimized around:
 - Detect truthfulness
 - Perform content moderation
 
+
+Note that the deterministic layer does not attempt to produce a comprehensive “engagement bait score" and instead returns 5 potential component of engagement bait. 
+
+These signals do not exhaustively capture all forms of engagement engineering or narrative distortion, and therefore are not combined to create a final score. 
+
+This layer is intentionally interpretable, serving as a signal extractor instead of an all encompassing score. 
+
 ## Tech Stack
 
 - FastAPI
