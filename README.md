@@ -15,7 +15,7 @@ The API is publicly hosted and ready to use — no setup required.
 | API Documentation | https://engagbaitapi.onrender.com/redoc |
 | Health check | https://engagbaitapi.onrender.com/health |
 
-Try it immediately with curl:
+Try it immediately with curl. Windows users, do NOT run this in Command Prompt or PowerShell. Use Git Bash, WSL, or a Unix-based terminal:
 
 ```bash
 curl -s -X POST "https://engagbaitapi.onrender.com/analyze?embeddings=false" \
