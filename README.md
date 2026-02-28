@@ -25,7 +25,7 @@ This project is currently optimized around:
 - Perform content moderation
 
 
-Note that the deterministic layer does not attempt to produce a comprehensive “engagement bait score" and instead returns 5 potential component of engagement bait. 
+Note that the deterministic layer does not attempt to produce a comprehensive “engagement bait score" and instead returns 5 potential components of engagement bait. 
 
 These signals do not exhaustively capture all forms of engagement engineering or narrative distortion, and therefore are not combined to create a final score. 
 
