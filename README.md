@@ -24,12 +24,11 @@ This project is currently optimized around:
 - Detect truthfulness
 - Perform content moderation
 
+Note that the deterministic layer does not attempt to produce a comprehensive "engagement bait score" and instead returns 5 potential components of engagement bait.
 
-Note that the deterministic layer does not attempt to produce a comprehensive “engagement bait score" and instead returns 5 potential components of engagement bait. 
+These signals do not exhaustively capture all forms of engagement engineering or narrative distortion, and therefore are not combined to create a final score.
 
-These signals do not exhaustively capture all forms of engagement engineering or narrative distortion, and therefore are not combined to create a final score. 
-
-This layer is intentionally interpretable, serving as a signal extractor instead of an all encompassing score. 
+This layer is intentionally interpretable, serving as a signal extractor instead of an all encompassing score.
 
 ## Tech Stack
 
@@ -90,9 +89,9 @@ Constraints:
 
 - text length: 50 to 50,000 characters
 
-Example:
+Example (Powershell):
 
-```Powershell
+```powershell
 
 Invoke-RestMethod -Method Post -Uri "http://localhost:5000/analyze?embeddings=false" -ContentType "application/json" -Body (@{ text = "Act now. This is your last chance to see the truth before it disappears. Everyone knows they are lying, and if you do not share this immediately, more people will be fooled. There is no middle ground, and the answer is obvious." } | ConvertTo-Json -Compress)
 
@@ -186,7 +185,7 @@ The response preserves the order of the submitted items and includes each caller
 
 ## Response Meta
 
-Each analysis response includes:
+Example meta when ML is requested but OpenAI is unavailable:
 
 ```json
 "meta": {
